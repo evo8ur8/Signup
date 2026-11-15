@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Christmas Meal Sign-Up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--pine:#1f3d2f;--pine2:#2c5642;--berry:#a4243b;--snow:#f6f8f6;--gold:#c9a24a;--ink:#1c2822;--mute:#5d6b63;--line:#d6e0d9}
+*{box-sizing:border-box}
+body{margin:0;background:var(--snow);color:var(--ink);font:17px/1.5 "Nunito Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;margin:0}
+.lights{height:14px;background:
+radial-gradient(circle at 12px 7px,var(--gold) 0 4px,#0000 5px) 0 0/72px 14px,
+radial-gradient(circle at 36px 7px,var(--berry) 0 4px,#0000 5px) 0 0/72px 14px,
+radial-gradient(circle at 60px 7px,#e8efe9 0 4px,#0000 5px) 0 0/72px 14px,var(--pine)}
+header{background:var(--pine);color:#fff;padding:30px 16px 28px}
+.wrap,main{max-width:760px;margin:0 auto}
+h1{font-weight:800;font-size:clamp(2rem,6.5vw,3.3rem);line-height:1.1;margin-bottom:16px}
+.meta{display:flex;flex-wrap:wrap;gap:8px}
+.meta span{background:rgba(255,255,255,.14);padding:6px 14px;border-radius:999px;font-size:.95rem}
+.details{white-space:pre-wrap;max-width:62ch;margin:16px 0 0;color:#e3ece6}
+main{padding:20px 16px 70px}
+.banner{background:#fff4d6;border:1px solid var(--gold);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.95rem}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.stat{flex:1 1 200px;color:var(--mute);font-weight:600}
+.btn{font:inherit;font-weight:700;border-radius:8px;padding:10px 16px;border:2px solid var(--berry);cursor:pointer;min-height:44px;background:transparent;color:var(--berry)}
+.btn.primary{background:var(--berry);color:#fff}
+.btn.sm{min-height:36px;padding:5px 12px;font-size:.95rem}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.cat{background:#fff;border:1px solid var(--line);border-radius:10px;margin:16px 0;overflow:hidden}
+.cat-h{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px}
+.cat-h h2{font-size:1.3rem}.cat-h small{color:var(--mute)}
+.item{padding:12px 16px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr auto;gap:4px 12px}
+.who{color:var(--mute);font-size:.95rem}.note{font-style:italic;font-size:.95rem}
+.acts{display:flex;gap:12px;align-items:start}
+.acts button{background:none;border:0;color:var(--berry);font:inherit;font-size:.92rem;text-decoration:underline;cursor:pointer;padding:4px 0}
+.empty{padding:14px 16px;border-top:1px solid var(--line);color:var(--mute)}
+dialog{border:0;border-radius:12px;padding:0;width:min(520px,94vw);max-height:92vh}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+form{padding:20px}
+label{display:block;font-weight:700;margin-top:12px}
+input,select,textarea{width:100%;font:inherit;padding:10px;border:1px solid #b9c7be;border-radius:8px;margin-top:4px;background:#fff;color:var(--ink)}
+.hint{font-weight:400;color:var(--mute);font-size:.88rem}
+.row{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--pine);color:#fff;padding:12px 20px;border-radius:8px;z-index:9;max-width:92vw}
+@media print{.lights,.bar,.acts,.cat-h button,.banner{display:none}header{background:#fff;color:#000}.meta span{background:none;padding:0 12px 0 0}.details{color:#000}}
+</style>
+</head>
+<body>
+<div class="lights"></div>
+<header><div class="wrap">
+  <h1 id="title">Christmas Meal</h1>
+  <div class="meta" id="meta"></div>
+  <p class="details" id="details"></p>
+</div></header>
+<main>
+  <div class="banner" id="banner" hidden>Preview mode: entries are saved only on this device. Add your database URL at the top of the script so everyone sees the same list.</div>
+  <div class="bar">
+    <div class="stat" id="stat"></div>
+    <button class="btn primary" id="addBtn">Sign up to bring a dish</button>
+    <button class="btn" id="editBtn">Edit event</button>
+    <button class="btn" id="printBtn">Print</button>
+  </div>
+  <div id="cats"></div>
+</main>
+
+<dialog id="dlgS"><form id="fS">
+  <h3 id="sTitle">Sign up to bring a dish</h3>
+  <label>Your name <input id="sName" required autocomplete="name"></label>
+  <label>Category <select id="sCat"></select></label>
+  <label>What are you bringing? <input id="sDish" required placeholder="Sweet potato casserole"></label>
+  <label>About how many people does it serve? <input id="sServes" type="number" min="1" inputmode="numeric"></label>
+  <label>Notes <span class="hint">(allergens, needs heating, etc.)</span><textarea id="sNotes" rows="2"></textarea></label>
+  <div class="row"><button type="button" class="btn" data-close>Cancel</button><button class="btn primary">Save</button></div>
+</form></dialog>
+
+<dialog id="dlgE"><form id="fE">
+  <h3>Edit event</h3>
+  <label>Title <input id="eTitle" required></label>
+  <label>Date <input id="eDate" type="date"></label>
+  <label>Time <input id="eTime" placeholder="1:00 PM"></label>
+  <label>Location <input id="eLoc"></label>
+  <label>Details <textarea id="eDetails" rows="4" placeholder="Menu notes, what the host is providing, parking, etc."></textarea></label>
+  <label>Categories <span class="hint">One per line. Guests pick one when they sign up.</span><textarea id="eCats" rows="6"></textarea></label>
+  <label>Host PIN <span class="hint">(optional) Asked before anyone edits event details. Stops accidental edits only; it is not secure.</span><input id="ePin" autocomplete="off"></label>
+  <div class="row"><button type="button" class="btn" data-close>Cancel</button><button class="btn primary">Save event</button></div>
+</form></dialog>
+<div id="toast" hidden></div>
+
+<script>
+// ===== SETUP: paste your Firebase Realtime Database URL between the quotes =====
+// Example: "https://your-project-default-rtdb.firebaseio.com"
+// Leave it empty to preview the page (data stays on this device only).
+const DB_URL = "https://last-war-alliance-default-rtdb.firebaseio.com";
+const ROOT = "signupSheet"; // folder name inside the database
+// ==============================================================================
+
+const $ = s => document.querySelector(s);
+const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const lsg = k => { try { return localStorage.getItem(k) || "" } catch (e) { return "" } };
+const lss = (k, v) => { try { localStorage.setItem(k, v) } catch (e) {} };
+const DEF = {
+  title: "Christmas Meal", date: "", time: "", location: "", pin: "",
+  details: "Bring a dish to share. Please list any allergens in the notes.",
+  cats: [{n:"Main dishes"},{n:"Sides"},{n:"Desserts"},{n:"Drinks"},{n:"Rolls and bread"},{n:"Plates, cups and utensils"}]
+};
+const live = !!DB_URL, LK = "christmasSignupLocal";
+let ev = {...DEF}, sg = {}, editId = null, tt;
+
+const lget = () => { try { return JSON.parse(lsg(LK)) || {} } catch (e) { return {} } };
+async function fb(path, method = "GET", body) {
+  const r = await fetch(DB_URL.replace(/\/$/, "") + "/" + ROOT + path + ".json", {method, body: body === undefined ? undefined : JSON.stringify(body)});
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+async function saveEvent(e) {
+  if (live) return fb("/event", "PUT", e);
+  const d = lget(); d.event = e; lss(LK, JSON.stringify(d));
+}
+async function saveSignup(id, s) {
+  if (live) return id ? fb("/signups/" + id, "PUT", s) : fb("/signups", "POST", s);
+  const d = lget(); d.signups = d.signups || {}; d.signups[id || "l" + Date.now()] = s; lss(LK, JSON.stringify(d));
+}
+async function delSignup(id) {
+  if (live) return fb("/signups/" + id, "DELETE");
+  const d = lget(); delete (d.signups || {})[id]; lss(LK, JSON.stringify(d));
+}
+async function load() {
+  try {
+    const d = live ? (await fb("")) || {} : lget();
+    ev = {...DEF, ...(d.event || {})};
+    ev.cats = (Array.isArray(ev.cats) ? ev.cats : Object.values(ev.cats || {})).filter(Boolean);
+    sg = d.signups || {};
+    render();
+  } catch (e) { toast("Can’t reach the sign-up list. Check your connection.") }
+}
+function toast(m) { const t = $("#toast"); t.textContent = m; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => t.hidden = true, 3500) }
+
+function render() {
+  $("#title").textContent = ev.title;
+  document.title = ev.title + " Sign-Up";
+  const m = [];
+  if (ev.date) { const d = new Date(ev.date + "T12:00:00"); m.push(isNaN(d) ? ev.date : d.toLocaleDateString(undefined, {weekday:"long", month:"long", day:"numeric"})) }
+  if (ev.time) m.push(ev.time);
+  if (ev.location) m.push(ev.location);
+  $("#meta").innerHTML = m.map(x => `<span>${esc(x)}</span>`).join("");
+  $("#details").textContent = ev.details || "";
+  const list = Object.entries(sg).map(([id, s]) => ({...s, id, cat: s.cat || "Other"})).sort((a, b) => (a.ts || 0) - (b.ts || 0));
+  const names = ev.cats.map(c => c.n);
+  list.forEach(s => { if (!names.includes(s.cat)) names.push(s.cat) });
+  const serves = list.reduce((a, s) => a + (+s.serves || 0), 0);
+  $("#stat").textContent = list.length ? `${list.length} dish${list.length > 1 ? "es" : ""} signed up` + (serves ? `, enough for about ${serves} people` : "") : "No dishes yet";
+  $("#cats").innerHTML = names.map(n => {
+    const items = list.filter(s => s.cat === n), prog = items.length ? `${items.length} signed up` : "Open";
+    return `<section class="cat"><div class="cat-h"><div><h2>${esc(n)}</h2><small>${prog}</small></div><button class="btn sm" data-add="${esc(n)}">Bring one</button></div>`
+      + (items.length ? items.map(s => `<div class="item"><div><b>${esc(s.dish)}</b><div class="who">${esc(s.name)}${s.serves ? ", serves " + esc(s.serves) : ""}</div>${s.notes ? `<div class="note">${esc(s.notes)}</div>` : ""}</div><div class="acts"><button data-edit="${esc(s.id)}">Edit</button><button data-del="${esc(s.id)}">Remove</button></div></div>`).join("") : `<div class="empty">Nothing yet. Be the first to bring something.</div>`)
+      + `</section>`;
+  }).join("");
+}
+
+function openS(id, cat) {
+  editId = id || null;
+  const s = id ? sg[id] : {};
+  $("#sTitle").textContent = id ? "Edit your dish" : "Sign up to bring a dish";
+  const opts = [...new Set([...ev.cats.map(c => c.n), ...(s.cat ? [s.cat] : [])])];
+  $("#sCat").innerHTML = opts.map(n => `<option>${esc(n)}</option>`).join("");
+  $("#sCat").value = s.cat || cat || (ev.cats[0] || {}).n || "";
+  $("#sName").value = s.name || lsg("xmasName");
+  $("#sDish").value = s.dish || "";
+  $("#sServes").value = s.serves || "";
+  $("#sNotes").value = s.notes || "";
+  $("#dlgS").showModal();
+}
+
+$("#addBtn").onclick = () => openS();
+$("#printBtn").onclick = () => print();
+$("#cats").onclick = async e => {
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.add) openS(null, b.dataset.add);
+  else if (b.dataset.edit) openS(b.dataset.edit);
+  else if (b.dataset.del && confirm("Remove “" + (sg[b.dataset.del] || {}).dish + "” from the list?")) {
+    try { await delSignup(b.dataset.del); toast("Removed"); await load() } catch (x) { toast("Couldn’t remove it. Please try again.") }
+  }
+};
+document.addEventListener("click", e => { if (e.target.closest("[data-close]")) e.target.closest("dialog").close() });
+
+$("#fS").onsubmit = async e => {
+  e.preventDefault();
+  const s = {name: $("#sName").value.trim(), cat: $("#sCat").value, dish: $("#sDish").value.trim(), serves: $("#sServes").value.trim(), notes: $("#sNotes").value.trim(), ts: editId ? (sg[editId].ts || Date.now()) : Date.now()};
+  try { await saveSignup(editId, s); lss("xmasName", s.name); $("#dlgS").close(); toast(editId ? "Changes saved" : "You’re signed up. Thank you!"); await load() }
+  catch (x) { toast("Couldn’t save. Please try again.") }
+};
+
+$("#editBtn").onclick = () => {
+  if (ev.pin) { const p = prompt("Enter the host PIN to edit event details"); if (p === null) return; if (p !== ev.pin) return toast("That PIN doesn’t match.") }
+  $("#eTitle").value = ev.title; $("#eDate").value = ev.date; $("#eTime").value = ev.time; $("#eLoc").value = ev.location;
+  $("#eDetails").value = ev.details; $("#ePin").value = ev.pin;
+  $("#eCats").value = ev.cats.map(c => c.n).join("\n");
+  $("#dlgE").showModal();
+};
+$("#fE").onsubmit = async e => {
+  e.preventDefault();
+  const cats = $("#eCats").value.split("\n").map(l => l.trim().replace(/:\s*\d+$/, "").trim()).filter(Boolean).map(n => ({n}));
+  const n = {title: $("#eTitle").value.trim() || "Christmas Meal", date: $("#eDate").value, time: $("#eTime").value.trim(), location: $("#eLoc").value.trim(), details: $("#eDetails").value.trim(), pin: $("#ePin").value.trim(), cats};
+  try { await saveEvent(n); $("#dlgE").close(); toast("Event saved"); await load() }
+  catch (x) { toast("Couldn’t save the event. Please try again.") }
+};
+
+if (!live) $("#banner").hidden = false;
+load();
+if (live) { setInterval(load, 20000); document.addEventListener("visibilitychange", () => { if (!document.hidden) load() }) }
+</script>
+</body>
+</html>
