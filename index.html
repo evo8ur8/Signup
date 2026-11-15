@@ -50,6 +50,7 @@ h1{font-weight:800;font-size:clamp(2rem,6.5vw,3.3rem);line-height:1.1;margin-bot
 .sm{fill:#fff;opacity:0;animation:smk 4s ease-out infinite}
 @keyframes smk{0%{opacity:0;transform:translate(0,0) scale(.6)}15%{opacity:.8}100%{opacity:0;transform:translate(10px,-34px) scale(2.2)}}
 @media (prefers-reduced-motion:reduce){.scene *{animation:none!important}}
+.gifbox{margin-top:12px}.gifbox img{display:block;margin:0 auto;max-width:100%;max-height:260px;border-radius:10px 10px 0 0}
 .vid{max-width:760px;margin:16px auto 0;padding:0 16px}.vid div{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#000}.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 main{padding:20px 16px 70px}
 .banner{background:#fff4d6;border:1px solid var(--gold);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.95rem}
@@ -75,7 +76,7 @@ input,select,textarea{width:100%;font:inherit;padding:10px;border:1px solid #b9c
 .hint{font-weight:400;color:var(--mute);font-size:.88rem}
 .row{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
 #toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--pine);color:#fff;padding:12px 20px;border-radius:8px;z-index:9;max-width:92vw}
-@media print{.vid,.scene,.lights,.bar,.acts,.cat-h button,.banner{display:none}header{background:#fff;color:#000}.meta span{background:none;padding:0 12px 0 0}.details{color:#000}}
+@media print{.gifbox,.vid,.scene,.lights,.bar,.acts,.cat-h button,.banner{display:none}header{background:#fff;color:#000}.meta span{background:none;padding:0 12px 0 0}.details{color:#000}}
 </style>
 </head>
 <body>
@@ -138,6 +139,7 @@ input,select,textarea{width:100%;font:inherit;padding:10px;border:1px solid #b9c
       <g class="say"><rect x="-30" y="2" width="160" height="22" rx="11" fill="#fff"/><path d="M20 24 l6 8 l6 -8z" fill="#fff"/><text x="-18" y="17" font-size="11" font-weight="700" fill="#1c2822" font-family="Nunito Sans,system-ui,sans-serif">Not stealing. Borrowing.</text></g>
     </g>
   </svg>
+  <div class="gifbox" id="gif" hidden></div>
 </div></header>
 <section class="vid" id="vid" hidden></section>
 <main>
@@ -167,6 +169,7 @@ input,select,textarea{width:100%;font:inherit;padding:10px;border:1px solid #b9c
   <label>Date <input id="eDate" type="date"></label>
   <label>Time <input id="eTime" placeholder="1:00 PM"></label>
   <label>Location <input id="eLoc"></label>
+  <label>Animated GIF <span class="hint">(optional) A direct GIF link, a Giphy page link, or the name of a .gif file in your repo. It replaces the cartoon at the top.</span><input id="eGif" placeholder="https://giphy.com/gifs/..."></label>
   <label>Video link <span class="hint">(optional) A YouTube link shows a video under the title.</span><input id="eVideo" placeholder="https://youtu.be/..."></label>
   <label style="font-weight:400"><input type="checkbox" id="eAuto" style="width:auto"> Play automatically, muted and looping</label>
   <label>Details <textarea id="eDetails" rows="4" placeholder="Menu notes, what the host is providing, parking, etc."></textarea></label>
@@ -189,7 +192,7 @@ const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt
 const lsg = k => { try { return localStorage.getItem(k) || "" } catch (e) { return "" } };
 const lss = (k, v) => { try { localStorage.setItem(k, v) } catch (e) {} };
 const DEF = {
-  title: "Christmas Meal", video: "https://www.youtube.com/watch?v=8coCtKWysGk", vauto: false, date: "", time: "", location: "", pin: "",
+  title: "Christmas Meal", video: "", vauto: false, gif: "", date: "", time: "", location: "", pin: "",
   details: "Bring a dish to share. Please list any allergens in the notes.",
   cats: [{n:"Main dishes"},{n:"Sides"},{n:"Desserts"},{n:"Drinks"},{n:"Rolls and bread"},{n:"Plates, cups and utensils"}]
 };
@@ -226,6 +229,7 @@ async function load() {
 function toast(m) { const t = $("#toast"); t.textContent = m; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => t.hidden = true, 3500) }
 
 const ytId = u => { u = String(u || ""); const m = u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/) || u.match(/^([\w-]{11})$/); return m ? m[1] : "" };
+const gifUrl = u => { u = String(u || "").trim(); if (!u) return ""; const g = u.match(/giphy\.com\/(?:gifs|stickers|embed)\/(?:[\w-]*-)?([A-Za-z0-9]+)(?:[\/?#].*)?$/); if (g) return "https://media.giphy.com/media/" + g[1] + "/giphy.gif"; return /^(https:\/\/\S+|[\w][\w .\/-]*\.(gif|webp|png|jpe?g))$/i.test(u) ? u : "" };
 function render() {
   $("#title").textContent = ev.title;
   document.title = ev.title + " Sign-Up";
@@ -235,6 +239,8 @@ function render() {
   if (ev.location) m.push(ev.location);
   $("#meta").innerHTML = m.map(x => `<span>${esc(x)}</span>`).join("");
   $("#details").textContent = ev.details || "";
+  const gu = gifUrl(ev.gif), gb = $("#gif");
+  if (gb.dataset.k !== gu) { gb.dataset.k = gu; gb.hidden = !gu; document.querySelector(".scene").style.display = gu ? "none" : ""; gb.innerHTML = gu ? `<img src="${esc(gu)}" alt="">` : "" }
   const vid = ytId(ev.video), key = vid + "|" + ev.vauto, box = $("#vid");
   if (box.dataset.k !== key) {
     box.dataset.k = key; box.hidden = !vid;
@@ -289,14 +295,14 @@ $("#fS").onsubmit = async e => {
 $("#editBtn").onclick = () => {
   if (ev.pin) { const p = prompt("Enter the host PIN to edit event details"); if (p === null) return; if (p !== ev.pin) return toast("That PIN doesn’t match.") }
   $("#eTitle").value = ev.title; $("#eDate").value = ev.date; $("#eTime").value = ev.time; $("#eLoc").value = ev.location;
-  $("#eDetails").value = ev.details; $("#ePin").value = ev.pin; $("#eVideo").value = ev.video || ""; $("#eAuto").checked = !!ev.vauto;
+  $("#eDetails").value = ev.details; $("#ePin").value = ev.pin; $("#eVideo").value = ev.video || ""; $("#eGif").value = ev.gif || ""; $("#eAuto").checked = !!ev.vauto;
   $("#eCats").value = ev.cats.map(c => c.n).join("\n");
   $("#dlgE").showModal();
 };
 $("#fE").onsubmit = async e => {
   e.preventDefault();
   const cats = $("#eCats").value.split("\n").map(l => l.trim().replace(/:\s*\d+$/, "").trim()).filter(Boolean).map(n => ({n}));
-  const n = {title: $("#eTitle").value.trim() || "Christmas Meal", date: $("#eDate").value, time: $("#eTime").value.trim(), location: $("#eLoc").value.trim(), details: $("#eDetails").value.trim(), pin: $("#ePin").value.trim(), video: $("#eVideo").value.trim(), vauto: $("#eAuto").checked, cats};
+  const n = {title: $("#eTitle").value.trim() || "Christmas Meal", date: $("#eDate").value, time: $("#eTime").value.trim(), location: $("#eLoc").value.trim(), details: $("#eDetails").value.trim(), pin: $("#ePin").value.trim(), video: $("#eVideo").value.trim(), gif: $("#eGif").value.trim(), vauto: $("#eAuto").checked, cats};
   try { await saveEvent(n); $("#dlgE").close(); toast("Event saved"); await load() }
   catch (x) { toast("Couldn’t save the event. Please try again.") }
 };
