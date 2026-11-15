@@ -16,12 +16,41 @@ h1,h2,h3{font-family:Fraunces,Georgia,serif;margin:0}
 radial-gradient(circle at 12px 7px,var(--gold) 0 4px,#0000 5px) 0 0/72px 14px,
 radial-gradient(circle at 36px 7px,var(--berry) 0 4px,#0000 5px) 0 0/72px 14px,
 radial-gradient(circle at 60px 7px,#e8efe9 0 4px,#0000 5px) 0 0/72px 14px,var(--pine)}
-header{background:var(--pine);color:#fff;padding:30px 16px 28px}
+header{background:var(--pine);color:#fff;padding:30px 16px 0}
 .wrap,main{max-width:760px;margin:0 auto}
 h1{font-weight:800;font-size:clamp(2rem,6.5vw,3.3rem);line-height:1.1;margin-bottom:16px}
 .meta{display:flex;flex-wrap:wrap;gap:8px}
 .meta span{background:rgba(255,255,255,.14);padding:6px 14px;border-radius:999px;font-size:.95rem}
 .details{white-space:pre-wrap;max-width:62ch;margin:16px 0 0;color:#e3ece6}
+.scene{display:block;width:100%;height:auto;margin-top:6px}
+.walk{animation:walk 18s linear infinite}
+@keyframes walk{from{transform:translateX(-210px)}to{transform:translateX(800px)}}
+.bob{animation:bob .45s ease-in-out infinite alternate}.bob2{animation-duration:.3s}
+@keyframes bob{to{transform:translateY(-4px)}}
+.lg{transform-box:fill-box;transform-origin:50% 0;animation:sw .45s ease-in-out infinite alternate}.lg.b{animation-direction:alternate-reverse}
+@keyframes sw{from{transform:rotate(-22deg)}to{transform:rotate(22deg)}}
+.br{animation:br 1.8s ease-in-out infinite}
+@keyframes br{0%,65%,100%{transform:translateY(0)}75%{transform:translateY(-3px)}88%{transform:translateY(1px)}}
+.tail{transform-origin:4px 92px;animation:wag .25s ease-in-out infinite alternate}
+@keyframes wag{from{transform:rotate(-25deg)}to{transform:rotate(25deg)}}
+.ant{transform-origin:44px 73px;animation:ant 1.2s ease-in-out infinite alternate}
+@keyframes ant{from{transform:rotate(-12deg)}to{transform:rotate(14deg)}}
+.say{opacity:0;animation:say 18s linear infinite}
+@keyframes say{0%,32%{opacity:0}36%,56%{opacity:1}60%,100%{opacity:0}}
+.crumb{animation:cr .9s ease-in infinite}.crumb.b{animation-delay:.45s}
+@keyframes cr{from{transform:translate(0,0);opacity:1}to{transform:translate(-26px,28px);opacity:0}}
+.fl{fill:#fff;opacity:.85;animation:fall linear infinite}
+@keyframes fall{from{transform:translateY(-8px)}to{transform:translateY(125px)}}
+.arm{transform-origin:50px 74px;animation:arm .45s ease-in-out infinite alternate}
+@keyframes arm{from{transform:rotate(-25deg)}to{transform:rotate(25deg)}}
+.ear{transform-box:fill-box;transform-origin:50% 0;animation:ear .3s ease-in-out infinite alternate}
+@keyframes ear{from{rotate:-8deg}to{rotate:14deg}}
+.tg{animation:tg .3s ease-in-out infinite alternate}@keyframes tg{to{transform:translateY(2px)}}
+.win{animation:fk 2.6s ease-in-out infinite alternate}@keyframes fk{from{opacity:.7}to{opacity:1}}
+.sm{fill:#fff;opacity:0;animation:smk 4s ease-out infinite}
+@keyframes smk{0%{opacity:0;transform:translate(0,0) scale(.6)}15%{opacity:.8}100%{opacity:0;transform:translate(10px,-34px) scale(2.2)}}
+@media (prefers-reduced-motion:reduce){.scene *{animation:none!important}}
+.vid{max-width:760px;margin:16px auto 0;padding:0 16px}.vid div{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#000}.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 main{padding:20px 16px 70px}
 .banner{background:#fff4d6;border:1px solid var(--gold);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.95rem}
 .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
@@ -46,7 +75,7 @@ input,select,textarea{width:100%;font:inherit;padding:10px;border:1px solid #b9c
 .hint{font-weight:400;color:var(--mute);font-size:.88rem}
 .row{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
 #toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--pine);color:#fff;padding:12px 20px;border-radius:8px;z-index:9;max-width:92vw}
-@media print{.lights,.bar,.acts,.cat-h button,.banner{display:none}header{background:#fff;color:#000}.meta span{background:none;padding:0 12px 0 0}.details{color:#000}}
+@media print{.vid,.scene,.lights,.bar,.acts,.cat-h button,.banner{display:none}header{background:#fff;color:#000}.meta span{background:none;padding:0 12px 0 0}.details{color:#000}}
 </style>
 </head>
 <body>
@@ -55,7 +84,62 @@ input,select,textarea{width:100%;font:inherit;padding:10px;border:1px solid #b9c
   <h1 id="title">Christmas Meal</h1>
   <div class="meta" id="meta"></div>
   <p class="details" id="details"></p>
+  <svg class="scene" viewBox="0 0 760 130" aria-hidden="true">
+    <defs>
+      <radialGradient id="gF" cx=".4" cy=".3" r=".8"><stop offset="0" stop-color="#9bd16f"/><stop offset="1" stop-color="#4a8236"/></radialGradient>
+      <radialGradient id="gD" cx=".4" cy=".3" r=".8"><stop offset="0" stop-color="#cf955a"/><stop offset="1" stop-color="#85552a"/></radialGradient>
+      <radialGradient id="gS" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#d9b077"/><stop offset="1" stop-color="#8a6236"/></radialGradient>
+      <linearGradient id="gH" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#f6f8f6"/></linearGradient>
+    </defs>
+    <g id="snow"></g>
+    <path d="M0 108 Q200 90 400 103 T760 99 V130 H0Z" fill="#cfdcd4"/>
+    <g fill="#1b3a2b"><path d="M40 106 l14 -40 l14 40z"/><path d="M70 106 l11 -30 l11 30z"/><path d="M450 104 l14 -38 l14 38z"/><path d="M482 104 l10 -28 l10 28z"/><path d="M706 104 l13 -36 l13 36z"/></g>
+    <g fill="#fff" opacity=".9"><path d="M54 66 l-7 14 q7 3 14 0z"/><path d="M464 66 l-7 14 q7 3 14 0z"/><path d="M719 68 l-6 12 q6 3 12 0z"/></g>
+    <g><rect x="568" y="80" width="56" height="30" fill="#4a3428"/><path d="M562 82 L596 62 L630 82z" fill="#2f211a"/><path d="M562 81 L596 60 L630 81 L630 76 L596 55 L562 76z" fill="#fff"/><rect x="610" y="60" width="7" height="12" fill="#3a2a22"/>
+      <rect class="win" x="576" y="90" width="12" height="11" fill="#f2c94c"/><rect class="win" x="602" y="90" width="12" height="11" fill="#f2c94c"/>
+      <circle class="sm" cx="613" cy="56" r="4"/><circle class="sm" style="animation-delay:1.3s" cx="613" cy="56" r="4"/><circle class="sm" style="animation-delay:2.6s" cx="613" cy="56" r="4"/></g>
+    <path d="M0 116 Q190 100 380 110 T760 108 V130 H0Z" fill="url(#gH)"/>
+    <g class="walk">
+      <ellipse cx="-78" cy="111" rx="22" ry="3.5" fill="#0002"/><ellipse cx="34" cy="111" rx="30" ry="4" fill="#0002"/>
+      <g transform="translate(-100 0)"><g class="bob bob2">
+        <path class="tail" d="M4 92 q-8 -8 -6 -18" stroke="#a9743f" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <rect class="lg" x="10" y="98" width="5" height="11" rx="2" fill="#7a4d24"/><rect class="lg b" x="16" y="98" width="5" height="11" rx="2" fill="#7a4d24"/>
+        <rect class="lg b" x="30" y="98" width="5" height="11" rx="2" fill="#7a4d24"/><rect class="lg" x="36" y="98" width="5" height="11" rx="2" fill="#7a4d24"/>
+        <ellipse cx="22" cy="92" rx="19" ry="10" fill="url(#gD)"/><ellipse cx="22" cy="97" rx="14" ry="4" fill="#e9c79a" opacity=".5"/>
+        <path d="M8 86 l-3 -2 M14 82 l-2 -3 M30 82 l1 -3" stroke="#cf955a" stroke-width="1.6" stroke-linecap="round"/>
+        <circle cx="44" cy="82" r="10" fill="url(#gD)"/>
+        <ellipse class="ear" cx="38" cy="85" rx="3.5" ry="7" fill="#6b4120" transform="rotate(15 38 85)"/>
+        <ellipse cx="52" cy="86" rx="6" ry="4.5" fill="#e0b987"/><ellipse cx="56" cy="84.5" rx="2.2" ry="1.7" fill="#1c2822"/>
+        <path d="M52 89 q2 1 4 0" stroke="#5a3a1c" stroke-width="1" fill="none"/><path class="tg" d="M54 89 q1 5 3 0" fill="#d9536b"/>
+        <circle cx="47" cy="79" r="1.8" fill="#1c2822"/><circle cx="47.6" cy="78.4" r=".6" fill="#fff"/>
+        <g class="ant"><path d="M44 73 l-1 -11 m1 7 l-6 -5 m7 1 l5 -6" stroke="#6b4a2a" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="44" cy="72" r="2.5" fill="#a4243b"/></g>
+      </g></g>
+      <g class="bob">
+        <circle class="crumb" cx="-4" cy="80" r="2.5" fill="#d9a066"/><circle class="crumb b" cx="-8" cy="84" r="2" fill="#d9a066"/>
+        <circle cx="4" cy="72" r="16" fill="url(#gS)"/><path d="M-4 62 q8 4 16 0 M-8 74 q12 6 24 0" stroke="#6a4a26" stroke-width="1.2" fill="none" opacity=".6"/>
+        <path d="M-2 58 q6 -8 12 0" stroke="#5a3d1f" stroke-width="3" fill="none"/>
+        <line x1="-4" y1="60" x2="-14" y2="46" stroke="#efe3c8" stroke-width="4" stroke-linecap="round"/><circle cx="-16" cy="43" r="4" fill="#efe3c8"/><circle cx="-12" cy="41" r="3.5" fill="#efe3c8"/>
+        <rect class="lg" x="20" y="98" width="8" height="12" rx="3" fill="#3f7330"/><rect class="lg b" x="38" y="98" width="8" height="12" rx="3" fill="#3f7330"/>
+        <ellipse cx="34" cy="82" rx="22" ry="22" fill="url(#gF)"/><ellipse cx="38" cy="92" rx="14" ry="9" fill="#b8dc8a" opacity=".35"/>
+        <path d="M14 72 l-4 -2 M13 84 l-5 0 M15 95 l-4 3 M55 78 l5 -2 M56 90 l5 2 M34 102 l0 4" stroke="#6fae4e" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M22 74 q-10 -8 -14 -14" stroke="url(#gF)" stroke-width="7" stroke-linecap="round" fill="none"/>
+        <rect x="16" y="60" width="38" height="9" rx="4" fill="#a4243b"/><path d="M50 66 l12 12 l-7 3 l-9 -9z" fill="#8c1d31"/><path d="M20 63 h30" stroke="#c4455a" stroke-width="1.2"/>
+        <path class="arm" d="M50 74 q8 8 6 18" stroke="url(#gF)" stroke-width="6" stroke-linecap="round" fill="none"/><circle class="arm" cx="56" cy="93" r="3.5" fill="#6fae4e"/>
+        <circle cx="38" cy="42" r="19" fill="url(#gF)"/><path d="M30 25 l-4 -9 l9 5z M44 24 l3 -9 l5 8z" fill="#6fae4e"/>
+        <path d="M20 36 l-5 -2 M21 48 l-5 2 M57 36 l5 -2 M56 48 l5 2" stroke="#6fae4e" stroke-width="2" stroke-linecap="round"/>
+        <ellipse cx="38" cy="58" rx="12" ry="5" fill="#4a8236" opacity=".35"/>
+        <ellipse cx="31" cy="42" rx="5.5" ry="6" fill="#f2d14b" stroke="#c9a02a" stroke-width=".8"/><ellipse cx="46" cy="42" rx="5.5" ry="6" fill="#f2d14b" stroke="#c9a02a" stroke-width=".8"/>
+        <circle cx="33" cy="43" r="2.2" fill="#1c2822"/><circle cx="48" cy="43" r="2.2" fill="#1c2822"/><circle cx="33.7" cy="42.3" r=".7" fill="#fff"/><circle cx="48.7" cy="42.3" r=".7" fill="#fff"/>
+        <path d="M25 41 h13 v-8 h-13z M40 41 h13 v-8 h-13z" fill="#7fbd5a"/>
+        <g class="br"><line x1="25" y1="33" x2="37" y2="37" stroke="#2b4a22" stroke-width="3" stroke-linecap="round"/><line x1="40" y1="37" x2="52" y2="33" stroke="#2b4a22" stroke-width="3" stroke-linecap="round"/></g>
+        <ellipse cx="38" cy="49" rx="2.5" ry="1.8" fill="#3d6a2c"/>
+        <path d="M27 52 Q40 63 54 50" stroke="#1c2822" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M33 56 l2 4 l2 -3z" fill="#fff"/>
+      </g>
+      <g class="say"><rect x="-30" y="2" width="160" height="22" rx="11" fill="#fff"/><path d="M20 24 l6 8 l6 -8z" fill="#fff"/><text x="-18" y="17" font-size="11" font-weight="700" fill="#1c2822" font-family="Nunito Sans,system-ui,sans-serif">Not stealing. Borrowing.</text></g>
+    </g>
+  </svg>
 </div></header>
+<section class="vid" id="vid" hidden></section>
 <main>
   <div class="banner" id="banner" hidden>Preview mode: entries are saved only on this device. Add your database URL at the top of the script so everyone sees the same list.</div>
   <div class="bar">
@@ -83,6 +167,8 @@ input,select,textarea{width:100%;font:inherit;padding:10px;border:1px solid #b9c
   <label>Date <input id="eDate" type="date"></label>
   <label>Time <input id="eTime" placeholder="1:00 PM"></label>
   <label>Location <input id="eLoc"></label>
+  <label>Video link <span class="hint">(optional) A YouTube link shows a video under the title.</span><input id="eVideo" placeholder="https://youtu.be/..."></label>
+  <label style="font-weight:400"><input type="checkbox" id="eAuto" style="width:auto"> Play automatically, muted and looping</label>
   <label>Details <textarea id="eDetails" rows="4" placeholder="Menu notes, what the host is providing, parking, etc."></textarea></label>
   <label>Categories <span class="hint">One per line. Guests pick one when they sign up.</span><textarea id="eCats" rows="6"></textarea></label>
   <label>Host PIN <span class="hint">(optional) Asked before anyone edits event details. Stops accidental edits only; it is not secure.</span><input id="ePin" autocomplete="off"></label>
@@ -103,7 +189,7 @@ const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt
 const lsg = k => { try { return localStorage.getItem(k) || "" } catch (e) { return "" } };
 const lss = (k, v) => { try { localStorage.setItem(k, v) } catch (e) {} };
 const DEF = {
-  title: "Christmas Meal", date: "", time: "", location: "", pin: "",
+  title: "Christmas Meal", video: "https://www.youtube.com/watch?v=8coCtKWysGk", vauto: false, date: "", time: "", location: "", pin: "",
   details: "Bring a dish to share. Please list any allergens in the notes.",
   cats: [{n:"Main dishes"},{n:"Sides"},{n:"Desserts"},{n:"Drinks"},{n:"Rolls and bread"},{n:"Plates, cups and utensils"}]
 };
@@ -139,6 +225,7 @@ async function load() {
 }
 function toast(m) { const t = $("#toast"); t.textContent = m; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => t.hidden = true, 3500) }
 
+const ytId = u => { u = String(u || ""); const m = u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/) || u.match(/^([\w-]{11})$/); return m ? m[1] : "" };
 function render() {
   $("#title").textContent = ev.title;
   document.title = ev.title + " Sign-Up";
@@ -148,6 +235,11 @@ function render() {
   if (ev.location) m.push(ev.location);
   $("#meta").innerHTML = m.map(x => `<span>${esc(x)}</span>`).join("");
   $("#details").textContent = ev.details || "";
+  const vid = ytId(ev.video), key = vid + "|" + ev.vauto, box = $("#vid");
+  if (box.dataset.k !== key) {
+    box.dataset.k = key; box.hidden = !vid;
+    box.innerHTML = vid ? `<div><iframe src="https://www.youtube-nocookie.com/embed/${vid}?rel=0&playsinline=1${ev.vauto ? `&autoplay=1&mute=1&loop=1&playlist=${vid}` : ""}" title="Video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>` : "";
+  }
   const list = Object.entries(sg).map(([id, s]) => ({...s, id, cat: s.cat || "Other"})).sort((a, b) => (a.ts || 0) - (b.ts || 0));
   const names = ev.cats.map(c => c.n);
   list.forEach(s => { if (!names.includes(s.cat)) names.push(s.cat) });
@@ -197,18 +289,19 @@ $("#fS").onsubmit = async e => {
 $("#editBtn").onclick = () => {
   if (ev.pin) { const p = prompt("Enter the host PIN to edit event details"); if (p === null) return; if (p !== ev.pin) return toast("That PIN doesn’t match.") }
   $("#eTitle").value = ev.title; $("#eDate").value = ev.date; $("#eTime").value = ev.time; $("#eLoc").value = ev.location;
-  $("#eDetails").value = ev.details; $("#ePin").value = ev.pin;
+  $("#eDetails").value = ev.details; $("#ePin").value = ev.pin; $("#eVideo").value = ev.video || ""; $("#eAuto").checked = !!ev.vauto;
   $("#eCats").value = ev.cats.map(c => c.n).join("\n");
   $("#dlgE").showModal();
 };
 $("#fE").onsubmit = async e => {
   e.preventDefault();
   const cats = $("#eCats").value.split("\n").map(l => l.trim().replace(/:\s*\d+$/, "").trim()).filter(Boolean).map(n => ({n}));
-  const n = {title: $("#eTitle").value.trim() || "Christmas Meal", date: $("#eDate").value, time: $("#eTime").value.trim(), location: $("#eLoc").value.trim(), details: $("#eDetails").value.trim(), pin: $("#ePin").value.trim(), cats};
+  const n = {title: $("#eTitle").value.trim() || "Christmas Meal", date: $("#eDate").value, time: $("#eTime").value.trim(), location: $("#eLoc").value.trim(), details: $("#eDetails").value.trim(), pin: $("#ePin").value.trim(), video: $("#eVideo").value.trim(), vauto: $("#eAuto").checked, cats};
   try { await saveEvent(n); $("#dlgE").close(); toast("Event saved"); await load() }
   catch (x) { toast("Couldn’t save the event. Please try again.") }
 };
 
+(() => { const g = $("#snow"); for (let i = 0; i < 16; i++) { const c = document.createElementNS("http://www.w3.org/2000/svg", "circle"); c.setAttribute("cx", Math.random() * 760 | 0); c.setAttribute("cy", 0); c.setAttribute("r", 1 + Math.random() * 1.5); c.setAttribute("class", "fl"); c.style.animationDuration = (5 + Math.random() * 5) + "s"; c.style.animationDelay = (-Math.random() * 8) + "s"; g.appendChild(c) } })();
 if (!live) $("#banner").hidden = false;
 load();
 if (live) { setInterval(load, 20000); document.addEventListener("visibilitychange", () => { if (!document.hidden) load() }) }
