@@ -12,10 +12,10 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--snow);color:var(--ink);font:17px/1.5 "Nunito Sans",system-ui,sans-serif}
 h1,h2,h3{font-family:Fraunces,Georgia,serif;margin:0}
-.lights{height:14px;background:
-radial-gradient(circle at 12px 7px,var(--gold) 0 4px,#0000 5px) 0 0/72px 14px,
-radial-gradient(circle at 36px 7px,var(--berry) 0 4px,#0000 5px) 0 0/72px 14px,
-radial-gradient(circle at 60px 7px,#e8efe9 0 4px,#0000 5px) 0 0/72px 14px,var(--pine)}
+.lights{height:14px;background:var(--pine);display:flex;overflow:hidden}
+.lights i{flex:0 0 24px;position:relative}
+.lights i::after{content:"";position:absolute;left:8px;top:3px;width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 7px 2px var(--c);animation:tw var(--d) ease-in-out infinite alternate;animation-delay:var(--l)}
+@keyframes tw{from{opacity:.3;transform:scale(.75)}to{opacity:1;transform:scale(1.1)}}
 header{background:var(--pine);color:#fff;padding:30px 16px 0}
 .wrap,main{max-width:760px;margin:0 auto}
 h1{font-weight:800;font-size:clamp(2rem,6.5vw,3.3rem);line-height:1.1;margin-bottom:16px}
@@ -49,8 +49,8 @@ h1{font-weight:800;font-size:clamp(2rem,6.5vw,3.3rem);line-height:1.1;margin-bot
 .win{animation:fk 2.6s ease-in-out infinite alternate}@keyframes fk{from{opacity:.7}to{opacity:1}}
 .sm{fill:#fff;opacity:0;animation:smk 4s ease-out infinite}
 @keyframes smk{0%{opacity:0;transform:translate(0,0) scale(.6)}15%{opacity:.8}100%{opacity:0;transform:translate(10px,-34px) scale(2.2)}}
-@media (prefers-reduced-motion:reduce){.scene *{animation:none!important}}
-.gifbox{margin-top:12px}.gifbox img{display:block;margin:0 auto;max-width:100%;max-height:260px;border-radius:10px 10px 0 0}
+@media (prefers-reduced-motion:reduce){.scene *,.lights i::after{animation:none!important}}
+.gifbox{margin-top:12px}.gifbox iframe{display:block;margin:0 auto;width:100%;max-width:480px;height:260px;border:0;border-radius:10px 10px 0 0}.gifbox img{display:block;margin:0 auto;max-width:100%;max-height:260px;border-radius:10px 10px 0 0}
 .vid{max-width:760px;margin:16px auto 0;padding:0 16px}.vid div{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#000}.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 main{padding:20px 16px 70px}
 .banner{background:#fff4d6;border:1px solid var(--gold);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.95rem}
@@ -169,7 +169,7 @@ input,select,textarea{width:100%;font:inherit;padding:10px;border:1px solid #b9c
   <label>Date <input id="eDate" type="date"></label>
   <label>Time <input id="eTime" placeholder="1:00 PM"></label>
   <label>Location <input id="eLoc"></label>
-  <label>Animated GIF <span class="hint">(optional) A direct GIF link, a Giphy page link, or the name of a .gif file in your repo. It replaces the cartoon at the top.</span><input id="eGif" placeholder="https://giphy.com/gifs/..."></label>
+  <label>Animated GIF <span class="hint">(optional) A direct GIF link, a Giphy or Tenor page link, or the name of a .gif file in your repo. It replaces the cartoon at the top.</span><input id="eGif" placeholder="https://giphy.com/gifs/..."></label>
   <label>Video link <span class="hint">(optional) A YouTube link shows a video under the title.</span><input id="eVideo" placeholder="https://youtu.be/..."></label>
   <label style="font-weight:400"><input type="checkbox" id="eAuto" style="width:auto"> Play automatically, muted and looping</label>
   <label>Details <textarea id="eDetails" rows="4" placeholder="Menu notes, what the host is providing, parking, etc."></textarea></label>
@@ -229,6 +229,7 @@ async function load() {
 function toast(m) { const t = $("#toast"); t.textContent = m; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => t.hidden = true, 3500) }
 
 const ytId = u => { u = String(u || ""); const m = u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/) || u.match(/^([\w-]{11})$/); return m ? m[1] : "" };
+const TENOR = /tenor\.com\/(?:view|embed)\/(?:[^\/?#]*-)?(\d+)(?:[\/?#]|$)/;
 const gifUrl = u => { u = String(u || "").trim(); if (!u) return ""; const g = u.match(/giphy\.com\/(?:gifs|stickers|embed)\/(?:[\w-]*-)?([A-Za-z0-9]+)(?:[\/?#].*)?$/); if (g) return "https://media.giphy.com/media/" + g[1] + "/giphy.gif"; return /^(https:\/\/\S+|[\w][\w .\/-]*\.(gif|webp|png|jpe?g))$/i.test(u) ? u : "" };
 function render() {
   $("#title").textContent = ev.title;
@@ -239,8 +240,8 @@ function render() {
   if (ev.location) m.push(ev.location);
   $("#meta").innerHTML = m.map(x => `<span>${esc(x)}</span>`).join("");
   $("#details").textContent = ev.details || "";
-  const gu = gifUrl(ev.gif), gb = $("#gif");
-  if (gb.dataset.k !== gu) { gb.dataset.k = gu; gb.hidden = !gu; document.querySelector(".scene").style.display = gu ? "none" : ""; gb.innerHTML = gu ? `<img src="${esc(gu)}" alt="">` : "" }
+  const gu = gifUrl(ev.gif), tn = String(ev.gif || "").match(TENOR), gk = tn ? "t" + tn[1] : gu, gb = $("#gif");
+  if (gb.dataset.k !== gk) { gb.dataset.k = gk; gb.hidden = !gk; document.querySelector(".scene").style.display = gk ? "none" : ""; gb.innerHTML = tn ? `<iframe src="https://tenor.com/embed/${tn[1]}" title="GIF" loading="lazy" allowfullscreen></iframe>` : gu ? `<img src="${esc(gu)}" alt="">` : "" }
   const vid = ytId(ev.video), key = vid + "|" + ev.vauto, box = $("#vid");
   if (box.dataset.k !== key) {
     box.dataset.k = key; box.hidden = !vid;
@@ -307,6 +308,7 @@ $("#fE").onsubmit = async e => {
   catch (x) { toast("Couldn’t save the event. Please try again.") }
 };
 
+(() => { const L = $(".lights"), cols = ["#c9a24a", "#ff4560", "#e8efe9", "#4fc27a"]; for (let i = 0; i < 90; i++) { const b = document.createElement("i"); b.style.cssText = `--c:${cols[i % 4]};--d:${(0.8 + Math.random() * 1.4).toFixed(2)}s;--l:${(-Math.random() * 2).toFixed(2)}s`; L.appendChild(b) } })();
 (() => { const g = $("#snow"); for (let i = 0; i < 16; i++) { const c = document.createElementNS("http://www.w3.org/2000/svg", "circle"); c.setAttribute("cx", Math.random() * 760 | 0); c.setAttribute("cy", 0); c.setAttribute("r", 1 + Math.random() * 1.5); c.setAttribute("class", "fl"); c.style.animationDuration = (5 + Math.random() * 5) + "s"; c.style.animationDelay = (-Math.random() * 8) + "s"; g.appendChild(c) } })();
 if (!live) $("#banner").hidden = false;
 load();
